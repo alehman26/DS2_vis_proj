@@ -1,14 +1,13 @@
+
 #
-# This is a Shiny web application. You can run the application by clicking
-# the 'Run App' button above.
-#
-# Find out more about building applications with Shiny here:
-#
-#    https://shiny.posit.co/
-#
-install.packages("readr")
-library("readr")
+##tab 1 (numerical relationship)graph of data where user picks two numrical variables and a plot of the two are provided 
+##    add option to color by region 
+
+##tab 2 (regional relationships) histogram of region where the user picks a numerical varible for the y axis 
+#install.packages("tidymodels")
+library("tidymodels")
 library(shiny)
+library(readr)
 
 clean_countries<-read_csv("clean_countries.csv")
 
@@ -20,12 +19,13 @@ ui <- fluidPage(
 
     # Sidebar with a slider input for number of bins 
     sidebarLayout(
-        sidebarPanel(
-            sliderInput("bins",
-                        "Number of bins:",
-                        min = 1,
-                        max = 50,
-                        value = 30)
+      sidebarPanel(
+      selectInput(inputId = "x_var", 
+                    label = "numerical vaiable", 
+                    choices = c("inflation", "GDP_capita","Population","change_pop")),
+      selectInput(inputId = "y_var", 
+                    label = "numerical vaiable", 
+                    choices = c("inflation", "GDP_capita","Population","change_pop"))
         ),
 
         # Show a plot of the generated distribution
@@ -39,14 +39,11 @@ ui <- fluidPage(
 server <- function(input, output) {
 
     output$distPlot <- renderPlot({
-        # generate bins based on input$bins from ui.R
-        x    <- faithful[, 2]
-        bins <- seq(min(x), max(x), length.out = input$bins + 1)
 
-        # draw the histogram with the specified number of bins
-        hist(x, breaks = bins, col = 'darkgray', border = 'white',
-             xlab = 'Waiting time to next eruption (in mins)',
-             main = 'Histogram of waiting times')
+        ggplot(clean_countries, aes(
+          x = .data[[input$x_var]],
+          y = .data[[input$y_var]]))+
+          geom_point()
     })
 }
 
