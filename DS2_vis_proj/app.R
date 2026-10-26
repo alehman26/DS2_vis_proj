@@ -39,10 +39,22 @@ ui <- fluidPage(
         )
       ),
       
-      tabPanel("regional relationships")
-      
+      tabPanel("regional relationships",
+        sidebarLayout(
+                      sidebarPanel(
+                                    selectInput(inputId = "bar_var", 
+                                                label = "numerical vaiable", 
+                                                choices = c("inflation", "GDP_capita","Population","change_pop"))
+                                  ),
+                 
+                 # Show a plot of the generated distribution
+                      mainPanel(
+                                plotOutput("bar")
+                      )
+                  )
     )
-)
+    )  
+    )
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
@@ -53,6 +65,13 @@ server <- function(input, output) {
           x = .data[[input$x_var]],
           y = .data[[input$y_var]]))+
           geom_point()
+    })
+    output$bar <- renderPlot({
+      
+      ggplot(clean_countries, aes(
+        x = region,
+        y = .data[[input$bar_var]]))+
+        geom_col()
     })
 }
 
