@@ -17,28 +17,37 @@ ui <- fluidPage(
     # Application title
     titlePanel("Countries' Economic Data"),
 
-    # Sidebar with a slider input for number of bins 
-    sidebarLayout(
-      sidebarPanel(
-      selectInput(inputId = "x_var", 
+    tabsetPanel(
+      
+      tabPanel(
+        "Numerical Relationships",
+        
+        sidebarLayout(
+          sidebarPanel(
+            selectInput(inputId = "x_var", 
                     label = "numerical vaiable", 
                     choices = c("inflation", "GDP_capita","Population","change_pop")),
-      selectInput(inputId = "y_var", 
+            selectInput(inputId = "y_var", 
                     label = "numerical vaiable", 
                     choices = c("inflation", "GDP_capita","Population","change_pop"))
-        ),
+          ),
 
         # Show a plot of the generated distribution
-        mainPanel(
-           plotOutput("distPlot")
+          mainPanel(
+           plotOutput("scatter_plot")
+          )
         )
+      ),
+      
+      tabPanel("regional relationships")
+      
     )
 )
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
 
-    output$distPlot <- renderPlot({
+    output$scatter_plot <- renderPlot({
 
         ggplot(clean_countries, aes(
           x = .data[[input$x_var]],
